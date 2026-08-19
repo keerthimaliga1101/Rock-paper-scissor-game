@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ROCK - PAPER - SCISSOR</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <div class="setup-card">
+
+            <div class="logo">
+                ✊
+            </div>
+
+            <h1>
+                ROCK - PAPER - SCISSOR
+            </h1>
+
+            <p class="subtitle">
+                The Ultimate Stone • Paper • Scissors Battle
+            </p>
+
+
+            <div class="line"></div>
+
+
+            <h2>
+                CHOOSE ROUNDS
+            </h2>
+
+            <p class="description">
+                Select the number of rounds
+                you want to play.
+            </p>
+
+
+            <form action="/start" method="POST">
+
+                <div class="round-grid">
+
+                    <label>
+
+                        <input type="radio" name="rounds" value="1">
+
+                        <span>
+                            <b>1</b>
+                            ROUND
+                        </span>
+
+                    </label>
+
+
+                    <label>
+
+                        <input type="radio" name="rounds" value="3">
+
+                        <span>
+                            <b>3</b>
+                            ROUNDS
+                        </span>
+
+                    </label>
+
+
+                    <label>
+
+                        <input type="radio" name="rounds" value="5" checked>
+
+                        <span>
+                            <b>5</b>
+                            ROUNDS
+                        </span>
+
+                    </label>
+
+
+                    <label>
+
+                        <input type="radio" name="rounds" value="7">
+
+                        <span>
+                            <b>7</b>
+                            ROUNDS
+                        </span>
+
+                    </label>
+
+
+                    <label>
+
+                        <input type="radio" name="rounds" value="10">
+
+                        <span>
+                            <b>10</b>
+                            ROUNDS
+                        </span>
+
+                    </label>
+
+                </div>
+
+
+                <button type="submit" class="primary-button">
+                    START GAME →
+                </button>
+
+            </form>
+
+
+            <div class="tech">
+
+                🤖 TensorFlow
+
+                <span>•</span>
+
+                ⚡ Flask
+
+                <span>•</span>
+
+                ✋ Teachable Machine
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

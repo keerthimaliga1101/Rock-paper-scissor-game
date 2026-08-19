@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ROCK - PAPER - SCISSOR - Match Result</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <div class="final-card">
+
+            <div class="trophy">
+                🏆
+            </div>
+
+
+            <p class="match-complete">
+                MATCH COMPLETE
+            </p>
+
+
+            {% if winner == "PLAYER 1" %}
+
+            <h1>
+                PLAYER 1 WINS!
+            </h1>
+
+            <p class="final-message">
+                Congratulations Player 1!
+            </p>
+
+
+            {% elif winner == "PLAYER 2" %}
+
+            <h1>
+                PLAYER 2 WINS!
+            </h1>
+
+            <p class="final-message">
+                Congratulations Player 2!
+            </p>
+
+
+            {% else %}
+
+            <h1>
+                MATCH DRAW!
+            </h1>
+
+            <p class="final-message">
+                Both players played equally!
+            </p>
+
+            {% endif %}
+
+
+            <div class="final-score">
+
+                <div>
+
+                    <span>
+                        PLAYER 1
+                    </span>
+
+                    <b>
+                        {{ score1 }}
+                    </b>
+
+                </div>
+
+
+                <strong>
+                    :
+                </strong>
+
+
+                <div>
+
+                    <span>
+                        PLAYER 2
+                    </span>
+
+                    <b>
+                        {{ score2 }}
+                    </b>
+
+                </div>
+
+            </div>
+
+
+            <p class="round-summary">
+                {{ total_rounds }} rounds played
+            </p>
+
+
+            <a href="/" class="primary-button">
+                PLAY AGAIN ↻
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

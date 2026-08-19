@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ROCK - PAPER - SCISSOR - Game</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+
+    <div class="game-container">
+
+
+        <!-- HEADER -->
+
+        <header>
+
+            <div class="brand-small">
+
+                <span>✊</span>
+
+                <div>
+
+                    <b>ROCK - PAPER - SCISSOR</b>
+
+                    <small>
+                        HUMAN VS HUMAN
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="round-badge">
+
+                ROUND
+
+                <strong>
+                    {{ current_round }}
+                </strong>
+
+                /
+
+                {{ total_rounds }}
+
+            </div>
+
+        </header>
+
+
+        <!-- SCORE -->
+
+        <div class="scoreboard">
+
+            <div class="score">
+
+                <span>
+                    PLAYER 1
+                </span>
+
+                <b>
+                    {{ score1 }}
+                </b>
+
+            </div>
+
+
+            <div class="vs">
+                VS
+            </div>
+
+
+            <div class="score">
+
+                <span>
+                    PLAYER 2
+                </span>
+
+                <b>
+                    {{ score2 }}
+                </b>
+
+            </div>
+
+        </div>
+
+
+        {% if error %}
+
+        <div class="error">
+            ⚠ {{ error }}
+        </div>
+
+        {% endif %}
+
+
+        <!-- PLAYERS -->
+
+        <div class="players">
+
+
+            <!-- PLAYER 1 -->
+
+            <div class="player-card">
+
+                <div class="player-title">
+
+                    <div class="avatar">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            PLAYER 1
+                        </h2>
+
+                        {% if player1_move %}
+
+                        <small>
+                            ✓ MOVE LOCKED
+                        </small>
+
+                        {% else %}
+
+                        <small>
+                            YOUR TURN
+                        </small>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                {% if not player1_move %}
+
+                <!-- PLAYER 1 UPLOAD & WEBCAM -->
+
+                <div class="upload-area">
+
+                    <div class="webcam-box" id="p1-webcam-box">
+                        <video id="webcam-p1" autoplay playsinline muted></video>
+                        <canvas id="canvas-p1" style="display:none;"></canvas>
+                    </div>
+
+                    <div class="hand-icon" id="p1-icon" style="display:none;">
+                        ✋
+                    </div>
+
+                    <h3>
+                        SHOW YOUR HAND
+                    </h3>
+
+                    <p id="p1-status">
+                        Align your hand in camera & capture move
+                    </p>
+
+
+                    <form id="form-p1" action="/player1" method="POST" enctype="multipart/form-data">
+
+                        <button type="button" id="btn-capture-p1" class="primary-button"
+                            onclick="captureAndSubmit('p1', '/player1')">
+                            📸 CAPTURE & DETECT MOVE
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                {% elif not result %}
+
+                <!-- HIDDEN PLAYER 1 -->
+
+                <div class="hidden-move">
+
+                    <div class="question">
+                        ?
+                    </div>
+
+                    <h3>
+                        MOVE LOCKED
+                    </h3>
+
+                    <p>
+                        Your move is hidden
+                        from Player 2.
+                    </p>
+
+                </div>
+
+                {% else %}
+
+                <!-- PLAYER 1 RESULT -->
+
+                <div class="result-move-box">
+
+                    <div class="big-hand">
+                        {% if player1_move == "Rock" %}✊{% elif player1_move == "Paper" %}✋{% else %}✌️{% endif %}
+                    </div>
+
+                    <h3>
+                        {{ player1_move }}
+                    </h3>
+
+                    <span>
+                        PLAYER 1 MOVE
+                    </span>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- CENTER -->
+
+            <div class="center">
+
+                <div class="swords">
+                    ⚔️
+                </div>
+
+
+                {% if not player1_move %}
+
+                <h2>
+                    PLAYER 1
+                </h2>
+
+                <p>
+                    Submit your hand
+                    to continue.
+                </p>
+
+                {% elif not result %}
+
+                <h2>
+                    PLAYER 2
+                </h2>
+
+                <p>
+                    Player 1's move is hidden.
+                    <br>
+                    Now submit your move.
+                </p>
+
+                {% else %}
+
+                <h2>
+                    ROUND RESULT
+                </h2>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- PLAYER 2 -->
+
+            <div class="player-card">
+
+                <div class="player-title">
+
+                    <div class="avatar">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            PLAYER 2
+                        </h2>
+
+                        {% if result %}
+
+                        <small>
+                            ✓ MOVE LOCKED
+                        </small>
+
+                        {% elif player1_move %}
+
+                        <small>
+                            YOUR TURN
+                        </small>
+
+                        {% else %}
+
+                        <small>
+                            WAITING
+                        </small>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                {% if not player1_move %}
+
+                <div class="hidden-move">
+
+                    <div class="question">
+                        ?
+                    </div>
+
+                    <h3>
+                        WAITING
+                    </h3>
+
+                    <p>
+                        Player 1 must
+                        play first.
+                    </p>
+
+                </div>
+
+
+                {% elif not result %}
+
+                <!-- PLAYER 2 UPLOAD & WEBCAM -->
+
+                <div class="upload-area">
+
+                    <div class="webcam-box" id="p2-webcam-box">
+                        <video id="webcam-p2" autoplay playsinline muted></video>
+                        <canvas id="canvas-p2" style="display:none;"></canvas>
+                    </div>
+
+                    <div class="hand-icon" id="p2-icon" style="display:none;">
+                        ✋
+                    </div>
+
+                    <h3>
+                        SHOW YOUR HAND
+                    </h3>
+
+                    <p id="p2-status">
+                        Align your hand in camera & capture move
+                    </p>
+
+
+                    <form id="form-p2" action="/player2" method="POST" enctype="multipart/form-data">
+
+                        <button type="button" id="btn-capture-p2" class="primary-button"
+                            onclick="captureAndSubmit('p2', '/player2')">
+                            📸 CAPTURE & DETECT MOVE
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                {% else %}
+
+                <!-- PLAYER 2 RESULT -->
+
+                <div class="result-move-box">
+
+                    <div class="big-hand">
+                        {% if player2_move == "Rock" %}✊{% elif player2_move == "Paper" %}✋{% else %}✌️{% endif %}
+                    </div>
+
+                    <h3>
+                        {{ player2_move }}
+                    </h3>
+
+                    <span>
+                        PLAYER 2 MOVE
+                    </span>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <!-- RESULT -->
+
+        {% if result %}
+
+        <div class="result-panel">
+
+            <p>
+                ROUND {{ current_round }} RESULT
+            </p>
+
+
+            {% if winner == "PLAYER 1" %}
+
+            <h1>
+                🏆 PLAYER 1 WINS!
+            </h1>
+
+            {% elif winner == "PLAYER 2" %}
+
+            <h1>
+                🏆 PLAYER 2 WINS!
+            </h1>
+
+            {% else %}
+
+            <h1>
+                🤝 DRAW!
+            </h1>
+
+            {% endif %}
+
+
+            <div class="moves">
+
+                <div>
+
+                    <span>
+                        PLAYER 1
+                    </span>
+
+                    <b>
+                        {{ player1_move }}
+                    </b>
+
+                </div>
+
+
+                <strong>
+                    VS
+                </strong>
+
+
+                <div>
+
+                    <span>
+                        PLAYER 2
+                    </span>
+
+                    <b>
+                        {{ player2_move }}
+                    </b>
+
+                </div>
+
+            </div>
+
+
+            {% if current_round < total_rounds %} <a href="/next" class="primary-button next-button">
+                NEXT ROUND →
+                </a>
+
+                {% else %}
+
+                <a href="/final" class="primary-button next-button">
+                    VIEW FINAL RESULT →
+                </a>
+
+                {% endif %}
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- HISTORY -->
+
+        <div class="history">
+
+            <h3>
+                ROUND HISTORY
+            </h3>
+
+
+            {% if history %}
+
+            {% for item in history %}
+
+            <div class="history-item">
+
+                <span>
+                    ROUND {{ item.round }}
+                </span>
+
+                <b>
+                    {{ item.player1 }}
+                </b>
+
+                <strong>
+                    VS
+                </strong>
+
+                <b>
+                    {{ item.player2 }}
+                </b>
+
+                <em>
+                    {{ item.winner }}
+                </em>
+
+            </div>
+
+            {% endfor %}
+
+            {% else %}
+
+            <p>
+                No completed rounds yet.
+            </p>
+
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+        let currentStream = null;
+        let activePlayer = '{{ "p2" if player1_move and not result else "p1" }}';
+
+        async function initWebcam(player) {
+            const video = document.getElementById(`webcam-${player}`);
+            const box = document.getElementById(`${player}-webcam-box`);
+            const icon = document.getElementById(`${player}-icon`);
+            const status = document.getElementById(`${player}-status`);
+
+            if (!video) return;
+
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" },
+                    audio: false
+                });
+                video.srcObject = currentStream;
+                if (box) box.style.display = 'block';
+                if (icon) icon.style.display = 'none';
+            } catch (err) {
+                console.warn("Webcam access error:", err);
+                if (status) status.innerText = "Camera unavailable. Please allow camera access to play.";
+            }
+        }
+
+        function captureAndSubmit(player, actionUrl) {
+            const video = document.getElementById(`webcam-${player}`);
+            const canvas = document.getElementById(`canvas-${player}`);
+            const btn = document.getElementById(`btn-capture-${player}`);
+
+            if (!video || !canvas || !video.srcObject) {
+                alert("Camera stream is not active. Please allow camera access first.");
+                return;
+            }
+
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            btn.disabled = true;
+            btn.innerText = 'Analyzing Gesture...';
+
+            canvas.toBlob((blob) => {
+                const formData = new FormData();
+                formData.append('image', blob, 'webcam_capture.jpg');
+
+                fetch(actionUrl, {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (response.redirected) {
+                            window.location.href = response.url;
+                        } else {
+                            return response.text().then(html => {
+                                document.open();
+                                document.write(html);
+                                document.close();
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Submission failed:", err);
+                        btn.disabled = false;
+                        btn.innerText = '📸 CAPTURE & DETECT MOVE';
+                    });
+            }, 'image/jpeg', 0.9);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            {% if not player1_move %}
+            initWebcam('p1');
+            {% elif not result %}
+            initWebcam('p2');
+            {% endif %}
+        });
+    </script>
+
+</body>
+
+</html>
